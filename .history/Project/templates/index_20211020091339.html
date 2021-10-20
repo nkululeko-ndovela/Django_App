@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Projects</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<style>
+body {
+    color: #404E67;
+    background: #F5F7FA;
+    font-family: 'Open Sans', sans-serif;
+}
+h3 {
+    text-align: center;
+}
+
+.table-title {
+    padding-bottom: 10px;
+    margin: 0 0 10px;
+}
+.table-title h2 {
+    margin: 6px 0 0;
+    font-size: 22px;
+}
+.table-title .add-new {
+    float: right;
+    height: 30px;
+    font-weight: bold;
+    font-size: 12px;
+    text-shadow: none;
+    min-width: 100px;
+    border-radius: 50px;
+    line-height: 13px;
+}
+.table-title .add-new i {
+    margin-right: 4px;
+}
+table.table {
+    table-layout: fixed;
+}
+table.table tr th, table.table tr td {
+    border-color: #e9e9e9;
+}
+table.table th i {
+    font-size: 13px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+table.table th:last-child {
+    width: 200px;
+}
+table.table td a {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 5px;
+    min-width: 16px;
+}    
+table.table td a.add {
+    color: #00ff73;
+}
+table.table td a.edit {
+    color: #ffffff;
+}
+table.table td a.delete {
+    color: #ffffff;
+}
+table.table td i {
+    font-size: 16px;
+}
+table.table td a.add i {
+    font-size: 24px;
+    margin-right: -1px;
+    position: relative;
+    top: 3px;
+}    
+table.table .form-control {
+    height: 32px;
+    line-height: 32px;
+    box-shadow: none;
+    border-radius: 2px;
+}
+table.table .form-control.error {
+    border-color: #f50000;
+}
+table.table td .add {
+    display: none;
+}
+</style>
+<script>
+$(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+	var actions = $("table td:last-child").html();
+	
+    $(".add-new").click(function(){
+		$(this).attr("disabled", "disabled");
+		var index = $("table tbody tr:last-child").index();
+        var row = '<tr>' +
+            '<td><input type="text" class="form-control" name="Project_Name" id="Project_Name"></td>' +
+            '<td><input type="text" class="form-control" name="Upload_By" id="Upload_By"></td>' +
+            '<td><input type="text" class="form-control" name="dated" id="dated"></td>' +
+			'<td>' + actions + '</td>' +
+        '</tr>';
+    	$("table").append(row);		
+		$("table tbody tr").eq(index + 1).find(".add, .edit").toggle();
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+	$(document).on("click", ".add", function(){
+		var empty = false;
+		var input = $(this).parents("tr").find('input[type="text"]');
+        input.each(function(){
+			if(!$(this).val()){
+				$(this).addClass("error");
+				empty = true;
+			} else{
+                $(this).removeClass("error");
+            }
+		});
+		$(this).parents("tr").find(".error").first().focus();
+		if(!empty){
+			input.each(function(){
+				$(this).parent("td").html($(this).val());
+			});			
+			$(this).parents("tr").find(".add, .edit").toggle();
+			$(".add-new").removeAttr("disabled");
+		}		
+    });
+
+	$(document).on("click", ".edit", function(){		
+        $(this).parents("tr").find("td:not(:last-child)").each(function(){
+			$(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
+		});		
+		$(this).parents("tr").find(".add, .edit").toggle();
+		$(".add-new").attr("disabled", "disabled");
+    });
+	
+	$(document).on("click", ".delete", function(){
+        $(this).parents("tr").remove();
+		$(".add-new").removeAttr("disabled");
+    });
+});
+</script>
+</head>
+<body><br><br><br><br><br><br>
+    <h3>Projects</h3>
+<div class="container-lg">
+    <div class="table-responsive">
+            <div class="table-title">
+                <div class="row">
+                   
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-info add-new bg-success"><i class="fa fa-plus"></i> Add New</button>
+                    </div><br><br>
+                
+            </div>
+            <form method="POST">
+            <table class="table table-bordered">
+                {% csrf_token %}
+                <thead>
+                    <tr>
+                        <th>Project Name</th>
+                        <th>Upload by</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Student Management System</td>
+                        <td>Lebo Kekana</td>
+                        <td>28 July 2022</td>
+                        <td>
+                            <a class="add" title="Add" data-toggle="tooltip">Add</a>
+                            <button type="button" class="btn btn-primary"><a class="edit" title="Edit" data-toggle="tooltip">Edit</a></button>
+                            
+                            <button type="button" class="btn btn-danger"><a class="delete" title="Delete" data-toggle="tooltip">Delete</a></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Bikers Portal</td>
+                        <td>Lerato Doe</td>
+                        <td>12 June 2022</td>
+                        <td>
+                            <a class="add" title="Add" data-toggle="tooltip">Add</a>
+                            <button type="button" class="btn btn-primary"><a class="edit" title="Edit" data-toggle="tooltip">Edit</a></button>
+                            
+                            <button type="button" class="btn btn-danger"><a class="delete" title="Delete" data-toggle="tooltip">Delete</a></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Weather Forecasting System</td>
+                        <td>Mpho Smith</td>
+                        <td>10 Jan 2022</td>
+                        <td>
+                            <a class="add" title="Add" data-toggle="tooltip">Add</a>
+                            <button type="button" class="btn btn-primary"><a class="edit" title="Edit" data-toggle="tooltip">Edit</a></button>
+                            
+                            <button type="button" class="btn btn-danger"><a class="delete" title="Delete" data-toggle="tooltip">Delete</a></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>AI Shopping System</td>
+                        <td>Mos Def</td>
+                        <td>15 March 2022</td>
+                        <td>
+                           
+                    <a class="add" title="Add" data-toggle="tooltip">Add</a>
+                     <button type="button" class="btn btn-primary"><a class="edit" title="Edit" data-toggle="tooltip">Edit</a></button>
+                      <button type="button" class="btn btn-danger"><a class="delete" title="Delete" data-toggle="tooltip">Delete</a></button>
+                        </td> 
+                    </tr>            
+                </tbody>
+            </table>
+            <input type="submit" value = "save record"/>
+            <hr>
+            % if messages %
+            {% if res in messages %}
+            <b style="color: #00ff73;">{{res}}</b>
+            %endfor%
+            {}
+        </form> 
+        </div>
+</div>     
+</div>
+</body>
+</html>
